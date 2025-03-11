@@ -1,4 +1,6 @@
-use idents::symbol;
+use super::idents::symbol;
+use super::numbers::number;
+use super::whitespace::opt_space;
 use nom::{
     branch::alt,
     bytes::complete::{tag, take_until},
@@ -6,10 +8,8 @@ use nom::{
     sequence::{delimited, tuple},
     IResult,
 };
-use numbers::number;
-use whitespace::opt_space;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Region {
     pub name: String,
     pub origin: u64,
@@ -52,7 +52,7 @@ pub fn region(input: &str) -> IResult<&str, Region> {
 
 #[cfg(test)]
 mod tests {
-    use memory::*;
+    use crate::memory::*;
 
     #[test]
     fn test_region() {

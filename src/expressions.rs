@@ -1,4 +1,6 @@
-use idents::symbol;
+use super::idents::symbol;
+use super::numbers::number;
+use super::whitespace::opt_space;
 use nom::{
     branch::alt,
     bytes::complete::tag,
@@ -7,8 +9,6 @@ use nom::{
     sequence::{delimited, pair},
     IResult,
 };
-use numbers::number;
-use whitespace::opt_space;
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum UnaryOperator {
@@ -279,7 +279,7 @@ pub fn expression(input: &str) -> IResult<&str, Expression> {
 
 #[cfg(test)]
 mod tests {
-    use expressions::*;
+    use crate::expressions::*;
 
     #[test]
     fn test_ws() {

@@ -1,18 +1,18 @@
-use commands::{command, Command};
-use memory::region;
-use memory::Region;
+use super::commands::{command, Command};
+use super::memory::region;
+use super::memory::Region;
+use super::sections::section_command;
+use super::sections::SectionCommand;
+use super::statements::{statement, Statement};
+use super::whitespace::opt_space;
 use nom::branch::alt;
 use nom::bytes::complete::tag;
 use nom::combinator::map;
 use nom::multi::many1;
 use nom::sequence::tuple;
 use nom::IResult;
-use sections::section_command;
-use sections::SectionCommand;
-use statements::{statement, Statement};
-use whitespace::opt_space;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum RootItem {
     Statement(Statement),
     Command(Command),
@@ -52,7 +52,7 @@ pub fn parse(input: &str) -> IResult<&str, Vec<RootItem>> {
 
 #[cfg(test)]
 mod tests {
-    use script::*;
+    use crate::script::*;
     use std::fs::{self, File};
     use std::io::Read;
 

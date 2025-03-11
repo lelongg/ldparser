@@ -84,7 +84,7 @@ pub fn number(input: &str) -> IResult<&str, u64> {
 
 #[cfg(test)]
 mod test {
-    use numbers::*;
+    use crate::numbers::*;
 
     #[test]
     fn test_binary() {

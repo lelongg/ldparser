@@ -1,14 +1,14 @@
-use expressions::expression;
-use expressions::Expression;
-use idents::{string, symbol};
+use super::expressions::expression;
+use super::expressions::Expression;
+use super::idents::{string, symbol};
+use super::whitespace::opt_space;
 use nom::branch::alt;
 use nom::bytes::complete::tag;
 use nom::combinator::map;
 use nom::combinator::opt;
 use nom::IResult;
-use whitespace::opt_space;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum AssignOperator {
     Equals,
     Plus,
@@ -21,7 +21,7 @@ pub enum AssignOperator {
     Or,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Statement {
     Assign {
         name: String,
@@ -141,8 +141,8 @@ pub fn statement(input: &str) -> IResult<&str, Statement> {
 
 #[cfg(test)]
 mod tests {
-    use expressions::Expression;
-    use statements::*;
+    use crate::expressions::Expression;
+    use crate::statements::*;
 
     #[test]
     fn test_statement() {

@@ -36,6 +36,7 @@ mod numbers;
 mod script;
 mod sections;
 mod statements;
+pub mod generator;
 
 pub use commands::Command;
 pub use expressions::BinaryOperator;

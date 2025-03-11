@@ -1,6 +1,7 @@
-use expressions::expression;
-use expressions::Expression;
-use idents::{pattern, symbol};
+use super::expressions::expression;
+use super::expressions::Expression;
+use super::idents::{pattern, symbol};
+use super::whitespace::{opt_space, space};
 use nom::branch::alt;
 use nom::bytes::complete::tag;
 use nom::combinator::map;
@@ -8,15 +9,14 @@ use nom::combinator::opt;
 use nom::multi::separated_list1;
 use nom::sequence::pair;
 use nom::IResult;
-use whitespace::{opt_space, space};
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum InsertOrder {
     Before,
     After,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Command {
     //Simple { name: String },
     Call {
@@ -80,7 +80,7 @@ pub fn command(input: &str) -> IResult<&str, Command> {
 
 #[cfg(test)]
 mod tests {
-    use commands::*;
+    use crate::commands::*;
 
     #[test]
     fn test_command() {

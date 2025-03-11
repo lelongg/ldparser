@@ -36,7 +36,7 @@ pub fn pattern(input: &str) -> IResult<&str, &str> {
 
 #[cfg(test)]
 mod tests {
-    use idents::*;
+    use crate::idents::*;
 
     #[test]
     fn test_symbol() {

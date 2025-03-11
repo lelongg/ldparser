@@ -43,12 +43,12 @@ macro_rules! wsc(
 
 #[cfg(test)]
 mod tests {
+    use crate::whitespace::opt_space;
     use nom::{
         bytes::complete::{tag, take_while1},
         multi::many0,
         sequence::tuple,
     };
-    use whitespace::opt_space;
 
     fn is_good(c: char) -> bool {
         c.is_alphanumeric() || c == '/' || c == '*'

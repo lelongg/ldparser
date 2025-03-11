@@ -1,8 +1,10 @@
-use commands::{command, Command};
-use expressions::expression;
-use expressions::Expression;
-use idents::pattern;
-use idents::symbol;
+use super::commands::{command, Command};
+use super::expressions::expression;
+use super::expressions::Expression;
+use super::idents::pattern;
+use super::idents::symbol;
+use super::statements::{statement, Statement};
+use super::whitespace::opt_space;
 use nom::branch::alt;
 use nom::bytes::complete::tag;
 use nom::combinator::cut;
@@ -14,10 +16,8 @@ use nom::sequence::delimited;
 use nom::sequence::preceded;
 use nom::sequence::tuple;
 use nom::IResult;
-use statements::{statement, Statement};
-use whitespace::opt_space;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum SectionCommand {
     Statement(Statement),
     Command(Command),
@@ -37,7 +37,7 @@ pub enum SectionCommand {
     },
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum OutputSectionCommand {
     Statement(Statement),
     Fill {
@@ -57,7 +57,7 @@ pub enum OutputSectionCommand {
     },
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum DataType {
     Byte,
     Short,
@@ -65,7 +65,7 @@ pub enum DataType {
     Quad,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum SectionPattern {
     Simple(String),
     SortByName(String),
@@ -78,7 +78,7 @@ pub enum SectionPattern {
     },
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum OutputSectionType {
     NoLoad,
     DSect,
@@ -87,7 +87,7 @@ pub enum OutputSectionType {
     Overlay,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum OutputSectionConstraint {
     OnlyIfRo,
     OnlyIfRw,
@@ -288,7 +288,7 @@ pub fn section_command(input: &str) -> IResult<&str, SectionCommand> {
 
 #[cfg(test)]
 mod tests {
-    use sections::*;
+    use crate::sections::*;
 
     #[test]
     fn test_section_command() {
