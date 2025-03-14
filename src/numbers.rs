@@ -1,3 +1,5 @@
+#![allow(clippy::from_str_radix_10)]
+
 use std::panic;
 
 use nom::{
@@ -49,10 +51,7 @@ fn prefixed_hex(input: &str) -> IResult<&str, u64> {
 }
 
 fn is_num_or_suffix(c: char) -> bool {
-    match c {
-        '0'..='9' | 'A'..='F' | 'a'..='f' | 'h' | 'H' | 'o' | 'O' | 'k' | 'K' | 'm' | 'M' => true,
-        _ => false,
-    }
+    matches!(c, '0'..='9' | 'A'..='F' | 'a'..='f' | 'h' | 'H' | 'o' | 'O' | 'k' | 'K' | 'm' | 'M')
 }
 
 fn parse_oct_or_dec(num: &str) -> Result<u64, ::std::num::ParseIntError> {

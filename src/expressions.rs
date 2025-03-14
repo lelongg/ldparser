@@ -67,7 +67,7 @@ fn value_ident(input: &str) -> IResult<&str, Expression> {
 }
 
 fn value_number(input: &str) -> IResult<&str, Expression> {
-    map(number, |x| Expression::Number(x))(input)
+    map(number, Expression::Number)(input)
 }
 
 fn value_nested(input: &str) -> IResult<&str, Expression> {

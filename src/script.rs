@@ -21,18 +21,18 @@ pub enum RootItem {
 }
 
 fn statement_item(input: &str) -> IResult<&str, RootItem> {
-    map(statement, |stmt| RootItem::Statement(stmt))(input)
+    map(statement, RootItem::Statement)(input)
 }
 
 fn command_item(input: &str) -> IResult<&str, RootItem> {
-    map(command, |cmd| RootItem::Command(cmd))(input)
+    map(command, RootItem::Command)(input)
 }
 
 fn memory_item(input: &str) -> IResult<&str, RootItem> {
     let (input, _) = tuple((tag("MEMORY"), wsc!(tag("{"))))(input)?;
     let (input, regions) = many1(wsc!(region))(input)?;
     let (input, _) = tag("}")(input)?;
-    Ok((input, RootItem::Memory { regions: regions }))
+    Ok((input, RootItem::Memory { regions }))
 }
 
 fn sections_item(input: &str) -> IResult<&str, RootItem> {

@@ -145,7 +145,7 @@ fn exclude_file_sp(input: &str) -> IResult<&str, SectionPattern> {
     Ok((
         input,
         SectionPattern::ExcludeFile {
-            files: files,
+            files,
             pattern: Box::new(inner),
         },
     ))
@@ -192,7 +192,7 @@ fn fill_osc(input: &str) -> IResult<&str, OutputSectionCommand> {
 }
 
 fn statement_osc(input: &str) -> IResult<&str, OutputSectionCommand> {
-    map(statement, |stmt| OutputSectionCommand::Statement(stmt))(input)
+    map(statement, OutputSectionCommand::Statement)(input)
 }
 
 fn input_osc(input: &str) -> IResult<&str, OutputSectionCommand> {
@@ -206,11 +206,8 @@ fn input_osc(input: &str) -> IResult<&str, OutputSectionCommand> {
     Ok((
         input,
         OutputSectionCommand::InputSection {
-            file: file,
-            sections: match sections {
-                Some(s) => s,
-                None => Vec::new(),
-            },
+            file,
+            sections: sections.unwrap_or_default(),
         },
     ))
 }
@@ -223,10 +220,7 @@ fn keep_osc(input: &str) -> IResult<&str, OutputSectionCommand> {
         input,
         match inner {
             OutputSectionCommand::InputSection { file, sections } => {
-                OutputSectionCommand::KeepInputSection {
-                    file: file,
-                    sections: sections,
-                }
+                OutputSectionCommand::KeepInputSection { file, sections }
             }
             _ => panic!("wrong output section command"),
         },
@@ -238,11 +232,11 @@ fn output_section_command(input: &str) -> IResult<&str, OutputSectionCommand> {
 }
 
 fn statement_sc(input: &str) -> IResult<&str, SectionCommand> {
-    map(statement, |stmt| SectionCommand::Statement(stmt))(input)
+    map(statement, SectionCommand::Statement)(input)
 }
 
 fn command_sc(input: &str) -> IResult<&str, SectionCommand> {
-    map(command, |cmd| SectionCommand::Command(cmd))(input)
+    map(command, SectionCommand::Command)(input)
 }
 
 fn output_sc(input: &str) -> IResult<&str, SectionCommand> {
@@ -276,8 +270,8 @@ fn output_sc(input: &str) -> IResult<&str, SectionCommand> {
             section_align: section_align.map(Box::new),
             align_with_input: align_with_input.is_some(),
             subsection_align: subsection_align.map(Box::new),
-            constraint: constraint,
-            content: content,
+            constraint,
+            content,
             region: region.map(String::from),
             lma_region: lma_region.map(String::from),
             fillexp: fillexp.map(Box::new),
