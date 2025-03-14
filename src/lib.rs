@@ -46,6 +46,7 @@ pub use expressions::UnaryOperator;
 pub use memory::Region;
 pub use script::RootItem;
 pub use sections::DataType;
+pub use sections::OutputSection;
 pub use sections::OutputSectionCommand;
 pub use sections::OutputSectionConstraint;
 pub use sections::OutputSectionType;
