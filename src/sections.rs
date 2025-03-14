@@ -5,7 +5,6 @@ use super::idents::pattern;
 use super::idents::symbol;
 use super::statements::{statement, Statement};
 use super::whitespace::opt_space;
-use bon::Builder;
 use nom::branch::alt;
 use nom::bytes::complete::tag;
 use nom::combinator::cut;
@@ -25,28 +24,19 @@ pub enum SectionCommand {
     OutputSection(OutputSection),
 }
 
-#[derive(Default, Debug, PartialEq, Clone, Builder)]
-#[builder(state_mod(vis = "pub"), on(String, into), on(Vec<_>, into))]
+#[derive(Default, Debug, PartialEq, Clone)]
 pub struct OutputSection {
-    #[builder(default = "")]
     pub name: String,
-    #[builder(with = |e: Expression| Box::new(e))]
     pub vma_address: Option<Box<Expression>>,
     pub s_type: Option<OutputSectionType>,
-    #[builder(with = |e: Expression| Box::new(e))]
     pub lma_address: Option<Box<Expression>>,
-    #[builder(with = |e: Expression| Box::new(e))]
     pub section_align: Option<Box<Expression>>,
-    #[builder(default = false)]
     pub align_with_input: bool,
-    #[builder(with = |e: Expression| Box::new(e))]
     pub subsection_align: Option<Box<Expression>>,
     pub constraint: Option<OutputSectionConstraint>,
-    #[builder(default = Vec::default())]
     pub content: Vec<OutputSectionCommand>,
     pub region: Option<String>,
     pub lma_region: Option<String>,
-    #[builder(with = |e: Expression| Box::new(e))]
     pub fillexp: Option<Box<Expression>>,
 }
 

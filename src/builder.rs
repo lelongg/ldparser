@@ -1,9 +1,4 @@
-use crate::{
-    commands::InsertOrder,
-    generator::Generate,
-    sections::{output_section_builder, OutputSectionBuilder},
-    *,
-};
+use crate::{commands::InsertOrder, generator::Generate, sections::OutputSection, *};
 
 #[derive(Default)]
 pub struct LinkerScriptBuilder {
@@ -128,12 +123,9 @@ impl SectionBuilder {
         self
     }
 
-    pub fn with_output<S: output_section_builder::State>(
-        mut self,
-        output_section: OutputSectionBuilder<S>,
-    ) -> Self {
+    pub fn with_output(mut self, output_section: OutputSection) -> Self {
         self.sections
-            .push(SectionCommand::OutputSection(output_section.build()));
+            .push(SectionCommand::OutputSection(output_section));
         self
     }
 }
@@ -157,6 +149,78 @@ impl Command {
             order,
             section: section.to_string(),
         }
+    }
+}
+
+impl OutputSection {
+    pub fn new(name: impl ToString) -> Self {
+        Self {
+            name: name.to_string(),
+            ..Default::default()
+        }
+    }
+
+    pub fn vma_address(mut self, expr: Expression) -> Self {
+        self.vma_address = Some(Box::new(expr));
+        self
+    }
+
+    pub fn section_type(mut self, s_type: OutputSectionType) -> Self {
+        self.s_type = Some(s_type);
+        self
+    }
+
+    pub fn lma_address(mut self, expr: Expression) -> Self {
+        self.lma_address = Some(Box::new(expr));
+        self
+    }
+
+    pub fn section_align(mut self, expr: Expression) -> Self {
+        self.section_align = Some(Box::new(expr));
+        self
+    }
+
+    pub fn align_with_input(mut self, align: bool) -> Self {
+        self.align_with_input = align;
+        self
+    }
+
+    pub fn subsection_align(mut self, expr: Expression) -> Self {
+        self.subsection_align = Some(Box::new(expr));
+        self
+    }
+
+    pub fn constraint(mut self, constraint: OutputSectionConstraint) -> Self {
+        self.constraint = Some(constraint);
+        self
+    }
+
+    pub fn add_command(mut self, command: OutputSectionCommand) -> Self {
+        self.content.push(command);
+        self
+    }
+
+    pub fn add_commands(
+        mut self,
+        commands: impl IntoIterator<Item = OutputSectionCommand>,
+    ) -> Self {
+        self.content.extend(commands);
+        self
+    }
+
+    pub fn region(mut self, region_name: impl ToString) -> Self {
+        self.region = Some(region_name.to_string());
+        self
+    }
+
+    pub fn lma_region(mut self, region_name: impl ToString) -> Self {
+        self.lma_region = Some(region_name.to_string());
+        self
+    }
+
+    pub fn fillexp(mut self, expr: Expression) -> Self {
+        self.fillexp = Some(Box::new(expr));
+        self
     }
 }
 
