@@ -1,4 +1,4 @@
-use crate::*;
+use crate::{sections::OutputSection, *};
 use indent::indent_all_by;
 
 const INDENTATION: usize = 2;
@@ -98,7 +98,7 @@ impl Generate for Expression {
     fn generate(self) -> String {
         match self {
             Expression::Ident(ident) => ident.clone(),
-            Expression::Number(num) => num.to_string(),
+            Expression::Number(num) => format!("0x{num:x}"),
             Expression::Call {
                 function,
                 arguments,
@@ -205,11 +205,10 @@ impl Generate for Region {
 
 impl Generate for SectionCommand {
     fn generate(self) -> String {
-        use SectionCommand::*;
         match self {
-            Statement(stmt) => stmt.generate(),
-            Command(cmd) => cmd.generate(),
-            OutputSection {
+            SectionCommand::Statement(stmt) => stmt.generate(),
+            SectionCommand::Command(cmd) => cmd.generate(),
+            SectionCommand::OutputSection(OutputSection {
                 name,
                 vma_address,
                 s_type,
@@ -222,7 +221,7 @@ impl Generate for SectionCommand {
                 region,
                 lma_region,
                 fillexp,
-            } => {
+            }) => {
                 let mut output = format!("{} ", name);
                 if let Some(vma_address) = vma_address {
                     output.push_str(&format!("({}) ", vma_address.generate()));

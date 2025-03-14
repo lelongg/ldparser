@@ -28,15 +28,16 @@ extern crate nom;
 mod utils;
 #[macro_use]
 mod whitespace;
+pub mod builder;
 mod commands;
 mod expressions;
+pub mod generator;
 mod idents;
 mod memory;
 mod numbers;
 mod script;
 mod sections;
 mod statements;
-pub mod generator;
 
 pub use commands::Command;
 pub use expressions::BinaryOperator;

@@ -5,6 +5,7 @@ use super::idents::pattern;
 use super::idents::symbol;
 use super::statements::{statement, Statement};
 use super::whitespace::opt_space;
+use bon::Builder;
 use nom::branch::alt;
 use nom::bytes::complete::tag;
 use nom::combinator::cut;
@@ -21,20 +22,32 @@ use nom::IResult;
 pub enum SectionCommand {
     Statement(Statement),
     Command(Command),
-    OutputSection {
-        name: String,
-        vma_address: Option<Box<Expression>>,
-        s_type: Option<OutputSectionType>,
-        lma_address: Option<Box<Expression>>,
-        section_align: Option<Box<Expression>>,
-        align_with_input: bool,
-        subsection_align: Option<Box<Expression>>,
-        constraint: Option<OutputSectionConstraint>,
-        content: Vec<OutputSectionCommand>,
-        region: Option<String>,
-        lma_region: Option<String>,
-        fillexp: Option<Box<Expression>>,
-    },
+    OutputSection(OutputSection),
+}
+
+#[derive(Default, Debug, PartialEq, Clone, Builder)]
+#[builder(state_mod(vis = "pub"), on(String, into), on(Vec<_>, into))]
+pub struct OutputSection {
+    #[builder(default = "")]
+    pub name: String,
+    #[builder(with = |e: Expression| Box::new(e))]
+    pub vma_address: Option<Box<Expression>>,
+    pub s_type: Option<OutputSectionType>,
+    #[builder(with = |e: Expression| Box::new(e))]
+    pub lma_address: Option<Box<Expression>>,
+    #[builder(with = |e: Expression| Box::new(e))]
+    pub section_align: Option<Box<Expression>>,
+    #[builder(default = false)]
+    pub align_with_input: bool,
+    #[builder(with = |e: Expression| Box::new(e))]
+    pub subsection_align: Option<Box<Expression>>,
+    pub constraint: Option<OutputSectionConstraint>,
+    #[builder(default = Vec::default())]
+    pub content: Vec<OutputSectionCommand>,
+    pub region: Option<String>,
+    pub lma_region: Option<String>,
+    #[builder(with = |e: Expression| Box::new(e))]
+    pub fillexp: Option<Box<Expression>>,
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -265,7 +278,7 @@ fn output_sc(input: &str) -> IResult<&str, SectionCommand> {
     let (input, _) = opt(tag(","))(input)?;
     Ok((
         input,
-        SectionCommand::OutputSection {
+        SectionCommand::OutputSection(OutputSection {
             name: name.into(),
             vma_address: vma.map(Box::new),
             s_type: if s_type1.is_some() { s_type1 } else { s_type2 },
@@ -278,7 +291,7 @@ fn output_sc(input: &str) -> IResult<&str, SectionCommand> {
             region: region.map(String::from),
             lma_region: lma_region.map(String::from),
             fillexp: fillexp.map(Box::new),
-        },
+        }),
     ))
 }
 
