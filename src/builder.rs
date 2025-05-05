@@ -95,6 +95,22 @@ impl MemoryBuilder {
         });
         self
     }
+
+    pub fn span(&self) -> u64 {
+        let min = self
+            .regions
+            .iter()
+            .map(|region| region.origin)
+            .min()
+            .unwrap_or(0);
+        let max = self
+            .regions
+            .iter()
+            .map(|region| region.origin + region.length)
+            .max()
+            .unwrap_or(0);
+        max - min
+    }
 }
 
 #[derive(Default)]
